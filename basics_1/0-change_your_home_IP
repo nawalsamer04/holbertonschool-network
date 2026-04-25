@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 # Configures localhost and facebook.com in the hosts file.
 
-sed -i 's/127.0.0.1[[:space:]]localhost/127.0.0.2 localhost/' /etc/hosts
+cp /etc/hosts /tmp/hosts
+sed 's/127.0.0.1[[:space:]]localhost/127.0.0.2 localhost/' /tmp/hosts > /tmp/hosts.new
 
-if grep -q "facebook.com" /etc/hosts
+if grep -q "facebook.com" /tmp/hosts.new
 then
-  sed -i 's/.*facebook.com/8.8.8.8 facebook.com/' /etc/hosts
+  sed 's/.*facebook.com/8.8.8.8 facebook.com/' /tmp/hosts.new > /tmp/hosts.final
 else
-  echo "8.8.8.8 facebook.com" >> /etc/hosts
+  cp /tmp/hosts.new /tmp/hosts.final
+  echo "8.8.8.8 facebook.com" >> /tmp/hosts.final
 fi
+
+cat /tmp/hosts.final > /etc/hosts
